@@ -3,6 +3,18 @@ Repository for "Deep peptide recognition profiling decodes TCR specificity and e
 
 Repo currently under construction, please email Hugh (hughy@uchicago.edu), Ben (ben.lai@czbiohub.org), Jason (jason.perera@czbiohub.org), and Aly (aakhan@uchicago.edu) if you have any questions
 
+## Installation
+```
+git clone https://github.com/akds/PRP-TCR-Specificity.git
+cd PRP-TCR-Specificity/
+
+# download weights
+gdown --fuzzy https://drive.google.com/file/d/16VoHYgtEMFRiaOy34iyouYb5D5QDRm-b/view?usp=sharing
+unzip weights.zip
+rm weights.zip
+```
+
+
 ## Training Single TCR Models
 ```
 # TODO
