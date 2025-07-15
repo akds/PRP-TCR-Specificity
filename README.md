@@ -1,5 +1,5 @@
 # PRP-TCR-Specificity
-Inline-style: 
+
 ![alt text](https://github.com/akds/PRP-TCR-Specificity/blob/main/PRP-TCR-Specificity.png "Logo")
 
 Repository for "Deep peptide recognition profiling decodes TCR specificity and enables autoantigen discovery"
