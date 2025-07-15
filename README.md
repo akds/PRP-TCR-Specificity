@@ -10,7 +10,7 @@ Repo currently under construction, please email Hugh (hughy@uchicago.edu), Ben (
 
 ## Human Proteome Inference
 ```
-python scripts/inference_esm_proteome.py --config <config path> \
+python scripts/inference_proteome.py --config <config path> \
       --cdr <cdr3b sequence> \
       --panel <choose between {SB/WB/SBWB/path to csv} \
       --device cuda:0
@@ -19,7 +19,7 @@ python scripts/inference_esm_proteome.py --config <config path> \
 For an example with TCR 19.2
 ```
 # Example with 19.2 
-python scripts/inference_esm_proteome.py --config configs/single_tcr/19.2_pretrain_finetune.yml \
+python scripts/inference_proteome.py --config configs/single_tcr/19.2_pretrain_finetune.yml \
       --cdr CASSPATYSTDTQYF \
       --panel SBWB \
       --device cuda:0 
