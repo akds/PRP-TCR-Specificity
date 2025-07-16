@@ -12,6 +12,11 @@ Repo currently under construction, please email Hugh (hughy@uchicago.edu), Ben (
 git clone https://github.com/akds/PRP-TCR-Specificity.git
 cd PRP-TCR-Specificity/
 
+# install environment
+conda env create -f environment.yml
+conda activate prp
+export LD_PRELOAD=$CONDA_PREFIX/lib/libstdc++.so.6
+
 # download weights
 gdown --fuzzy https://drive.google.com/file/d/16VoHYgtEMFRiaOy34iyouYb5D5QDRm-b/view?usp=sharing
 unzip weights.zip
