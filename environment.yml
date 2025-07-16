@@ -1,0 +1,35 @@
+name: prp
+channels:
+  - pytorch
+  - nvidia
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - libstdcxx-ng
+  - pytorch=2.3.1
+  - torchvision=0.18.1
+  - torchaudio=2.3.1
+  - pytorch-cuda=12.1
+  - pip:
+      - numpy
+      - pandas
+      - matplotlib
+      - seaborn
+      - scikit-learn
+      - scipy
+      - biopython
+      - tensorflow==2.17.0
+      - notebook
+      - ipykernel
+      - jupyterlab
+      - tqdm
+      - easydict
+      - einops==0.8.0
+      - gdown==5.2.0
+      - huggingface-hub==0.24.6
+      - fair-esm==2.0.0
+      - logomaker==0.8
+      - tcrdist3==0.2.2
+      - tcrsampler==0.1.9
+      - pytorch-lightning==2.4.0
