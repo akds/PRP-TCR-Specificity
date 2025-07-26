@@ -17,10 +17,16 @@ conda env create -f environment.yml
 conda activate prp
 export LD_PRELOAD=$CONDA_PREFIX/lib/libstdc++.so.6
 
-# download weights
+# download model weights
+# if you want to try with just TCR 19.2 model
 gdown --fuzzy https://drive.google.com/file/d/16VoHYgtEMFRiaOy34iyouYb5D5QDRm-b/view?usp=sharing
 unzip weights.zip
 rm weights.zip
+
+# to download all models [WARNING: Compressed .tar.gz is > 180 GB]
+gdown --fuzzy https://drive.google.com/file/d/1-ww-aI2QQ2NeZ3TOXvMkHbovnN4VQRCo/view?usp=sharing
+tar -xzvf weights.tar.gz
+rm weights.tar.gz
 ```
 
 
