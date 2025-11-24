@@ -42,10 +42,14 @@ tar -xzvf AS-data.tar.gz
 rm AS-data.tar.gz
 ```
 
-
 ## Training Single TCR Models
 ```
-# TODO
+python scripts/train.py <config>
+```
+
+For an example with TCR 19.2 (make sure to download example data first!)
+```
+python scripts/train.py configs/single_tcr/19.2_example_train.yml
 ```
 
 ## Human Proteome Inference
@@ -59,7 +63,7 @@ python scripts/inference_proteome.py --config <config path> \
 For an example with TCR 19.2
 ```
 # Example with 19.2 
-python scripts/inference_proteome.py --config configs/single_tcr/19.2_pretrain_finetune.yml \
+python scripts/inference_proteome.py --config configs/single_tcr/19.2_example_inference.yml \
       --cdr CASSPATYSTDTQYF \
       --panel SBWB \
       --device cuda:0 
