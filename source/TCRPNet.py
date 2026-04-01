@@ -1,19 +1,3 @@
-"""TCRPNet model definition.
-
-This module defines:
-    - AttnVector: a learnable attention-like weighting vector constrained to [0, 1]
-    - TCRPNet: a TCR beta / epitope interaction prediction model
-
-Expected inputs:
-    - TCRb_pw:      position-wise TCR beta features, shape (B, L_tcr, D + 20)
-    - epitope_pw:   position-wise epitope features, shape (B, L_epi, D + 20)
-    - TCRb_single:  pooled TCR beta features, shape (B, D)
-    - epitope_single: pooled epitope features, shape (B, D)
-
-Output:
-    - Predicted interaction score, shape (B, 1)
-"""
-
 import torch
 import torch.nn as nn
 from einops import einsum
