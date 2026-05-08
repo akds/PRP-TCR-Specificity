@@ -35,11 +35,9 @@ tar -xzvf vdjdb-pretrained-ckpt.tar.gz
 rm vdjdb-pretrained-ckpt.tar.gz
 
 ================================================================================================
-# download example data
-cd data/
-gdown --fuzzy https://drive.google.com/file/d/1ocoscSt-ZSM_M1lrVmza3yBi5aQ2thn0/view?usp=sharing
-tar -xzvf AS-data.tar.gz
-rm AS-data.tar.gz
+# download all AS data
+gdown --fuzzy https://drive.google.com/file/d/1F_aYA7fvd-P46uOBeGZWOQsRS7IMQYJ8/view?usp=sharing
+unzip AS-data-all.zip -d data/
 ```
 
 ## Training Single TCR Models
