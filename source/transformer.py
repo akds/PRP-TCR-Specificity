@@ -195,7 +195,7 @@ class TransformerEncoder(nn.Module):
             Tensor of shape (B, d_out) after masked or mean pooling.
         """
         src = self.positional_encoding(src)
-        src = self.dropout(src)
+        # src = self.dropout(src)
 
         for layer in self.encoder_layers:
             src = layer(src, mask)

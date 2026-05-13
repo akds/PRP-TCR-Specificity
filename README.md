@@ -1,5 +1,5 @@
 # PRP-TCR-Specificity
-Repository for "Deep peptide recognition profiling decodes TCR specificity and enables disease-associated antigen discovery"
+Repository for ["Deep peptide recognition profiling decodes TCR specificity and enables disease-associated antigen discovery"](https://www.nature.com/articles/s41587-026-03128-x) (*Nature Biotechnology*, 2026).
 
 <p align="center">
   <img src="https://github.com/akds/PRP-TCR-Specificity/blob/main/PRP-TCR-Specificity.png" alt="Logo">
@@ -24,7 +24,7 @@ wget https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-cont
 ## Download Data
 ```
 cd data/
-gdown --fuzzy https://drive.google.com/file/d/1F_aYA7fvd-P46uOBeGZWOQsRS7IMQYJ8/view?usp=sharing
+gdown --fuzzy https://drive.google.com/file/d/1shbyIZRiS-ZWDhqsLz2cY9RDVivuLVig/view?usp=sharing
 unzip ASdata-all.zip
 ```
 
@@ -35,9 +35,9 @@ The single-TCR configs in `configs/single_tcr/` initialize from a VDJdb-pretrain
 checkpoint for faster convergence. Download this if you would like to use it, otherwise, modify configs by removing path assigned to `pretrained_weights`.
 
 ```
-gdown --fuzzy https://drive.google.com/file/d/17KhZvZSm-XGDcOqZTlcjdpexeXNxuqCK/view?usp=sharing
-tar -xzvf vdjdb-pretrained-ckpt.tar.gz
-rm vdjdb-pretrained-ckpt.tar.gz
+gdown --fuzzy https://drive.google.com/file/d/1SyGIQ3UpUE6ovzmFnA_dgbuZbcpECoDq/view?usp=sharing
+unzip vdjdb-pretrained-ckpt.zip
+rm vdjdb-pretrained-ckpt.zip
 ```
 
 ### Single-TCR checkpoints (`single_tcr.zip`)
@@ -70,7 +70,7 @@ configs/
 scripts/                          training + inference entry points (see below)
 source/                           model, dataset, and trainer code
 notebooks/                        analysis notebooks (see below)
-data/                             directory for data, CDR3b sequences, and netMHC panels
+data/                             contains CDR3b sequences, activation data, and netMHC panels and also store deep sequencing data here
 ```
 
 ## Scripts
@@ -86,6 +86,11 @@ python scripts/train.py <config>
 # example: train TCR 19.2 (download data first)
 python scripts/train.py configs/single_tcr/19.2_model.yml
 ```
+
+To train on your own data, format the input CSV to match the files under
+`data/ASdata-all/` — required columns are `CDR3_b` (CDR3β sequence), `Epitope`
+(peptide), `Score` (0/1 label), and `Split` (one of `train`, `valid`, `test`).
+Point your config's `data.data_path` at the new CSV.
 
 ### `scripts/inference_test.py`
 Run inference on the held-out **test split** defined by the config's
@@ -141,6 +146,26 @@ Loads proteome logits from each TCR's
 Requires `scripts/inference_proteome.py` (or
 `inference_proteome_all_single_tcr.sh`) to have been run — or use the cached
 predictions in `single_tcr.zip`.
+
+## Citations
+
+If you use this code or data, please cite:
+
+```bibtex
+@article{Wang2026-PRP,
+  title    = {Deep peptide recognition profiling decodes {TCR} specificity and
+              enables disease-associated antigen discovery},
+  author   = {Wang, Nan and Yeh, Hugh and Lai, Ben and Perera, Jason and Jude,
+              Kevin M and Risch, Isabel and Um, Joy and Chen, Xiaojing and
+              Xiang, Xinyu and Wang, Chunyu and Liu, Liu Daisy and Yang, Xinbo
+              and Paley, Michael A and Khan, Aly A and Garcia, K Christopher},
+  journal  = {Nature Biotechnology},
+  month    = {May},
+  year     = {2026},
+  doi      = {10.1038/s41587-026-03128-x},
+  url      = {https://www.nature.com/articles/s41587-026-03128-x}
+}
+```
 
 ---
 

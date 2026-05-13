@@ -7,7 +7,7 @@ data:
   batch_size: 8
 
 model:
-  pretrained_weights: vdjdb-pretrained-ckpt/epoch=8-step=31653.ckpt
+  pretrained_weights: vdjdb-pretrained-ckpt/pretrained-checkpoint.ckpt
   use_pos_weight: true
   encoder_dim: 1280
   freeze_encoder: false
