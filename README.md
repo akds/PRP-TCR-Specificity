@@ -30,7 +30,7 @@ unzip ASdata-all.zip
 
 ## Download Pretrained Weights
 
-### VDJdb pretrained checkpoint (required before training)
+### VDJdb pretrained checkpoint
 The single-TCR configs in `configs/single_tcr/` initialize from a VDJdb-pretrained
 checkpoint for faster convergence. Download this if you would like to use it, otherwise, modify configs by removing path assigned to `pretrained_weights`.
 
