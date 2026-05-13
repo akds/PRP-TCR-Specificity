@@ -162,6 +162,7 @@ class DiscriminativePL(pl.LightningModule):
             on_epoch=True,
             prog_bar=True,
             logger=True,
+            sync_dist=True,
         )
 
         return {"loss": loss}
@@ -214,29 +215,44 @@ def train_model(
     Returns:
         The trained Lightning module.
     """
-    tb_logger = pl.loggers.TensorBoardLogger(
-        save_dir=args.tb_logger_path + args.tb_logger_folder,
-        version=args.version_name,
-    )
+    loggers = [
+        pl.loggers.TensorBoardLogger(
+            save_dir=args.tb_logger_path + args.tb_logger_folder,
+            version=args.version_name,
+        )
+    ]
+    if getattr(args, "wandb_project", None):
+        loggers.append(
+            pl.loggers.WandbLogger(
+                project=args.wandb_project,
+                entity=getattr(args, "wandb_entity", None),
+                name=args.version_name,
+                save_dir=args.tb_logger_path + args.tb_logger_folder,
+            )
+        )
 
     if valid_dataloader is None:
         checkpoint_callback = ModelCheckpoint(
             dirpath=None,
+            filename="best-checkpoint",
             save_top_k=1,
             verbose=True,
             monitor="train_loss",
             mode="min",
             save_last=True,
+            save_weights_only=True,
         )
         callbacks = [checkpoint_callback]
     else:
         checkpoint_callback = ModelCheckpoint(
             dirpath=None,
+            filename="best-checkpoint",
             save_top_k=1,
             verbose=True,
             monitor="valid_loss",
             mode="min",
             save_last=False,
+            save_weights_only=True,
         )
         early_stop_callback = EarlyStopping(
             monitor="valid_loss",
@@ -257,7 +273,7 @@ def train_model(
             accelerator="gpu",
             benchmark=True,
             callbacks=callbacks,
-            logger=[tb_logger],
+            logger=loggers,
             log_every_n_steps=1,
             strategy="ddp_find_unused_parameters_true",
             precision=args.precision,
@@ -271,7 +287,7 @@ def train_model(
             accelerator="gpu",
             benchmark=True,
             callbacks=callbacks,
-            logger=[tb_logger],
+            logger=loggers,
             log_every_n_steps=1,
             precision=args.precision,
         )

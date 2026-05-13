@@ -1,0 +1,26 @@
+general:
+  name: 19.2_allmutants_tcr
+  description: 19.2_allmutants_pretrain_finetune_esm
+
+data:
+  data_path: data/ASdata-all/19.2_allmutants_neg=rnd234c0_pos=rnd4c5.csv
+  batch_size: 8
+
+model:
+  pretrained_weights: vdjdb-pretrained-ckpt/epoch=8-step=31653.ckpt
+  use_pos_weight: true
+  encoder_dim: 1280
+  freeze_encoder: false
+  esm_weights: esm/esm2_t33_650M_UR50D.pt
+  patience: 10
+  lr: 1.e-6
+  weight_decay: 1.e-6
+  epochs: 1000
+  seed: 1
+  precision: bf16
+  device_num: [0,1,2,3]
+  strategy: ddp
+  tb_logger_path: model_outputs/
+  tb_logger_folder: 19.2_allmutants/
+  wandb_project: tcr-specificity # if you want to use wandb to log
+  version_name: 19.2_allmutants_finetune_esm

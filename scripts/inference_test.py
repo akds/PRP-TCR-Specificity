@@ -4,7 +4,6 @@ import os
 import sys
 
 import numpy as np
-import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -42,14 +41,14 @@ def run_inference(model, dl_test, args_model):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, help='path to config file')
-    parser.add_argument('--device', type=str, default='cuda:3', help='torch device')
-    parser.add_argument('--cdr', type=str, default='',
-                        help='CDR3 beta sequence; takes precedence over --tcr_id')
-    parser.add_argument('--tcr_id', type=str, default='',
-                        help='TCR id to look up CDR3_b from data/tcr_cdr3b.csv')
-    parser.add_argument('--panel', type=str, default='SB')
-    parser.add_argument('--save_path', type=str, default='')
-    parser.add_argument('--save_filename', type=str, default='')
+    parser.add_argument('--device', type=str, default='cuda:0', help='torch device')
+    parser.add_argument('--batch_size', type=int, default=128)
+    parser.add_argument('--save_path', type=str, default='',
+                        help='override save directory (default: <model_dir>/outputs/)')
+    parser.add_argument('--save_filename', type=str, default='y_pred_test',
+                        help='filename (without extension) for the saved predictions')
+    parser.add_argument('--save_y_true', action='store_true',
+                        help='also save the ground truth labels alongside predictions')
     args_raw = parser.parse_args()
     args, cfg_name = load_config(args_raw.config)
 
@@ -58,43 +57,15 @@ if __name__ == '__main__':
     args_model = args.model
     args_model.device = args_raw.device
 
-    # resolve CDR3_b from either explicit sequence or tcr_id lookup
-    if args_raw.cdr:
-        cdr3b = args_raw.cdr
-    elif args_raw.tcr_id:
-        lookup = pd.read_csv('data/tcr_cdr3b.csv')
-        matches = lookup.loc[lookup['tcr_id'] == args_raw.tcr_id, 'CDR3_b'].tolist()
-        if not matches:
-            raise SystemExit(f'tcr_id {args_raw.tcr_id!r} not found in data/tcr_cdr3b.csv')
-        if len(matches) > 1:
-            raise SystemExit(
-                f'tcr_id {args_raw.tcr_id!r} maps to {len(matches)} CDR3_b sequences; pass --cdr explicitly'
-            )
-        cdr3b = matches[0]
-        print(f'Resolved tcr_id {args_raw.tcr_id!r} -> CDR3_b {cdr3b}')
-    else:
-        raise SystemExit('must provide either --cdr or --tcr_id')
-
     # prep gpu
     torch.cuda.empty_cache()
     gc.collect()
     torch.set_float32_matmul_precision('medium')
     set_seed(args_model)
 
-    # load data
-    if args_raw.panel in ('SB', 'WB'):
-        data = pd.read_csv('data/netmhc_WBSB_9mers_clean.csv')
-        data = data.loc[data['Binding'] == args_raw.panel].reset_index(drop=True)
-    elif args_raw.panel == 'SBWB':
-        data = pd.read_csv('data/netmhc_WBSB_9mers_clean.csv')
-    else:
-        data = pd.read_csv(args_raw.panel)
-
-    if 'Split' not in data.columns.tolist():
-        data['Split'] = 'test'
-    data['CDR3_b'] = cdr3b
-    data['Score'] = 1
-    ds_test = DeepSequencingRawSequenceDataset(args_data, 'test', data=data)
+    # load test split from the config's data_path
+    ds_test = DeepSequencingRawSequenceDataset(args_data, 'test')
+    print('Test size: ', len(ds_test))
 
     # wrap model into PL
     model = TCRPNet()
@@ -109,7 +80,7 @@ if __name__ == '__main__':
     model = DiscriminativePL(args=args_model, model=model, pos_weight=pos_weight)
 
     collate_fn = BatchConverterCollater(alphabet=model.alphabet)
-    dl_test = DataLoader(ds_test, batch_size=128, shuffle=False, collate_fn=collate_fn)
+    dl_test = DataLoader(ds_test, batch_size=args_raw.batch_size, shuffle=False, collate_fn=collate_fn)
 
     # load checkpoint
     checkpoint_dir = os.path.join(
@@ -130,7 +101,7 @@ if __name__ == '__main__':
     y_pred, y_true = run_inference(model, dl_test, args_model)
     print(y_pred.shape)
 
-    # save predictions
+    # save predictions to <model_dir>/outputs/ by default
     prediction_path = args_raw.save_path or os.path.join(
         args_model.tb_logger_path,
         args_model.tb_logger_folder,
@@ -141,5 +112,7 @@ if __name__ == '__main__':
     os.makedirs(prediction_path, exist_ok=True)
     print('Saving to: ', prediction_path)
 
-    fname = (args_raw.save_filename + '.npy') if args_raw.save_filename else 'y_pred_proteome.npy'
+    fname = args_raw.save_filename + '.npy'
     np.save(os.path.join(prediction_path, fname), y_pred)
+    if args_raw.save_y_true:
+        np.save(os.path.join(prediction_path, 'y_true_test.npy'), y_true)

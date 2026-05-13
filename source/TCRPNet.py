@@ -1,25 +1,10 @@
+from __future__ import annotations
+
 import torch
 import torch.nn as nn
 from einops import einsum
 
 import transformer
-
-
-class AttnVector(nn.Module):
-    """Learnable attention vector with values constrained to [0, 1].
-
-    This module stores an unconstrained parameter and applies a sigmoid in
-    the forward pass so the returned weights lie between 0 and 1.
-    """
-
-    def __init__(self, size: int) -> None:
-        super().__init__()
-        self.unconstrained_param = nn.Parameter(torch.zeros(size))
-
-    def forward(self) -> torch.Tensor:
-        """Return the constrained attention weights."""
-        return torch.sigmoid(self.unconstrained_param)
-
 
 class TCRPNet(nn.Module):
     """TCR beta / peptide interaction prediction network.
@@ -32,22 +17,10 @@ class TCRPNet(nn.Module):
             - encoded position-wise representations
         3. Concatenates both pair representations as 2 input channels.
         4. Uses a small 2D CNN + MLP head to predict an interaction score.
-
-    Args:
-        use_attn: If True, replaces the provided single embeddings with
-            weighted averages computed from the position-wise embeddings.
     """
 
-    def __init__(self, use_attn: bool = False) -> None:
+    def __init__(self) -> None:
         super().__init__()
-
-        self.use_attn = use_attn
-
-        if self.use_attn:
-            # Learnable per-position weights for CDR and peptide residues.
-            self.attn_cdr = AttnVector(15)
-            self.attn_peptide = AttnVector(9)
-
         # Convolution / pooling hyperparameters.
         self.conv_kernel = (5, 5)
         self.pool_kernel = (5, 5)
@@ -135,20 +108,6 @@ class TCRPNet(nn.Module):
         Returns:
             Predicted interaction scores of shape (B, 1).
         """
-        if self.use_attn:
-            # Recompute pooled single-sequence embeddings from the position-wise
-            # embeddings by applying learned per-position weights.
-            # The final 20 channels are assumed to be one-hot AA features and are excluded.
-            TCRb_single = torch.clone(TCRb_pw[:, :, :-20])
-            _, tcr_len, _ = TCRb_single.shape
-            TCRb_single = TCRb_single * self.attn_cdr().unsqueeze(0).unsqueeze(-1)
-            TCRb_single = TCRb_single.sum(dim=1) / tcr_len
-
-            epitope_single = torch.clone(epitope_pw[:, :, :-20])
-            _, epitope_len, _ = epitope_single.shape
-            epitope_single = epitope_single * self.attn_peptide().unsqueeze(0).unsqueeze(-1)
-            epitope_single = epitope_single.sum(dim=1) / epitope_len
-
         # Encode position-wise representations.
         TCRb_encoded = self.encoder_tcrb(TCRb_pw, mask=TCRb_mask)
         epitope_encoded = self.encoder_epitope(epitope_pw, mask=epitope_mask)

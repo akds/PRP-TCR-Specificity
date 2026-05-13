@@ -1,4 +1,5 @@
 import ast
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -39,7 +40,14 @@ class DeepSequencingDataset(Dataset):
             self.data = self.data.loc[self.data["Split"] == split]
 
         # Remove peptides containing unknown amino acid tokens.
-        self.data = self.data.loc[~self.data["Epitope"].str.contains("X")]
+        x_mask = self.data["Epitope"].str.contains("X")
+        n_skipped = int(x_mask.sum())
+        if n_skipped > 0:
+            warnings.warn(
+                f"Skipping {n_skipped} row(s) with 'X' in Epitope (unknown amino acid).",
+                stacklevel=2,
+            )
+        self.data = self.data.loc[~x_mask]
         self.data = self.data.reset_index(drop=True)
 
         # Load precomputed representations.
@@ -94,7 +102,14 @@ class DeepSequencingRawSequenceDataset(Dataset):
             self.data = self.data.loc[self.data["Split"] == split]
 
         # Remove peptides containing unknown amino acid tokens.
-        self.data = self.data.loc[~self.data["Epitope"].str.contains("X")]
+        x_mask = self.data["Epitope"].str.contains("X")
+        n_skipped = int(x_mask.sum())
+        if n_skipped > 0:
+            warnings.warn(
+                f"Skipping {n_skipped} row(s) with 'X' in Epitope (unknown amino acid).",
+                stacklevel=2,
+            )
+        self.data = self.data.loc[~x_mask]
         self.data = self.data.reset_index(drop=True)
 
     def __len__(self) -> int:
