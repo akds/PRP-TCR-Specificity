@@ -62,8 +62,6 @@ model_outputs/single_tcr/lightning_logs/<tcr>_finetune_esm/
 The configs under `configs/single_tcr/` point at `model_outputs/single_tcr/...`,
 so no further changes are needed.
 
-### Individual single-TCR checkpoints (HuggingFace)
-
 If you only need a subset of the 22 checkpoints, each one is also mirrored as
 its own zip on Hugging Face at
 [hyeh/PRP-TCR-Specificity](https://huggingface.co/hyeh/PRP-TCR-Specificity),
