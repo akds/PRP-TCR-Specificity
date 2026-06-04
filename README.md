@@ -76,6 +76,7 @@ huggingface-cli download hyeh/PRP-TCR-Specificity \
 unzip lightning_logs/19.2_finetune_esm.zip \
     -d model_outputs/single_tcr/lightning_logs/
 rm lightning_logs/19.2_finetune_esm.zip
+```
 
 Each zip expands to a single <tcr>_finetune_esm/ directory containing checkpoints/ and outputs/. The
 premade configs under configs/single_tcr/ reference paths of the form
