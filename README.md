@@ -174,18 +174,13 @@ predictions in `single_tcr.zip`.
 If you use this code or data, please cite:
 
 ```bibtex
-@article{Wang2026-PRP,
-  title    = {Deep peptide recognition profiling decodes {TCR} specificity and
-              enables disease-associated antigen discovery},
-  author   = {Wang, Nan and Yeh, Hugh and Lai, Ben and Perera, Jason and Jude,
-              Kevin M and Risch, Isabel and Um, Joy and Chen, Xiaojing and
-              Xiang, Xinyu and Wang, Chunyu and Liu, Liu Daisy and Yang, Xinbo
-              and Paley, Michael A and Khan, Aly A and Garcia, K Christopher},
-  journal  = {Nature Biotechnology},
-  month    = {May},
-  year     = {2026},
-  doi      = {10.1038/s41587-026-03128-x},
-  url      = {https://www.nature.com/articles/s41587-026-03128-x}
+@article{wang2026deep,
+  title={Deep peptide recognition profiling decodes TCR specificity and enables disease-associated antigen discovery},
+  author={Wang, Nan and Yeh, Hugh and Lai, Ben and Perera, Jason and Jude, Kevin M and Risch, Isabel and Um, Joy and Chen, Xiaojing and Xiang, Xinyu and Wang, Chunyu and others},
+  journal={Nature Biotechnology},
+  pages={1--11},
+  year={2026},
+  publisher={Nature Publishing Group US New York}
 }
 ```
 
