@@ -62,6 +62,29 @@ model_outputs/single_tcr/lightning_logs/<tcr>_finetune_esm/
 The configs under `configs/single_tcr/` point at `model_outputs/single_tcr/...`,
 so no further changes are needed.
 
+### Individual single-TCR checkpoints (HuggingFace)
+
+If you only need a subset of the 22 checkpoints, each one is also mirrored as
+its own zip on Hugging Face at
+[hyeh/PRP-TCR-Specificity](https://huggingface.co/hyeh/PRP-TCR-Specificity),
+under `lightning_logs/<tcr>_finetune_esm.zip`.
+
+```bash
+pip install huggingface_hub
+mkdir -p model_outputs/single_tcr/lightning_logs/
+huggingface-cli download hyeh/PRP-TCR-Specificity \
+    lightning_logs/19.2_finetune_esm.zip \
+    --repo-type model --local-dir .
+unzip lightning_logs/19.2_finetune_esm.zip \
+    -d model_outputs/single_tcr/lightning_logs/
+rm lightning_logs/19.2_finetune_esm.zip
+
+Each zip expands to a single <tcr>_finetune_esm/ directory containing checkpoints/ and outputs/. The
+premade configs under configs/single_tcr/ reference paths of the form
+model_outputs/single_tcr/lightning_logs/<tcr>_finetune_esm/..., so the
+contents must end up at exactly that location for inference scripts and
+notebooks to find them. 
+
 ## Repository layout
 ```
 configs/
