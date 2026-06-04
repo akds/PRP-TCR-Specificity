@@ -40,7 +40,7 @@ unzip vdjdb-pretrained-ckpt.zip
 rm vdjdb-pretrained-ckpt.zip
 ```
 
-### Single-TCR checkpoints (`single_tcr.zip`)
+### Single-TCR checkpoints
 All 22 single-TCR checkpoints + cached test/proteome predictions, packaged as
 `single_tcr.zip`. Drop the contents into `model_outputs/` so the layout matches
 what the scripts and notebooks expect:
