@@ -61,7 +61,15 @@ if __name__ == '__main__':
     if not pd.isnull(args_model.pretrained_weights):
         print('Using checkpoint to finetune...')
         checkpoint = torch.load(args_model.pretrained_weights, map_location='cpu')
-        model.load_state_dict(checkpoint['state_dict'], strict=True)
+        state_dict = checkpoint['state_dict'].copy()
+
+        # Keep the loss weight computed for the current training dataset.
+        if model.criterion.pos_weight is not None:
+            state_dict['criterion.pos_weight'] = model.criterion.pos_weight
+        else:
+            state_dict.pop('criterion.pos_weight', None)
+
+        model.load_state_dict(state_dict, strict=True)
     else:
         print('Not using pretrained checkpoint...')
 
